@@ -1,0 +1,2055 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KFC Calorie Mate | Aussie KFC Feed & Calorie Tracker</title>
+
+  <!-- Google Fonts: Oswald for bold condensed KFC menu headers & Inter for clean UI -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Tailwind Custom Configuration -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            kfcRed: '#E4002B',
+            kfcDarkRed: '#B80022',
+            kfcBlack: '#202124',
+            kfcCream: '#FAF8F5',
+            kfcGold: '#F5A623',
+            kfcGoldLight: '#FEF5E6',
+          },
+          fontFamily: {
+            oswald: ['Oswald', 'sans-serif'],
+            inter: ['Inter', 'sans-serif'],
+          },
+          boxShadow: {
+            kfc: '0 4px 20px -2px rgba(32, 33, 36, 0.08)',
+            kfcHover: '0 10px 25px -4px rgba(228, 0, 43, 0.16)',
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    /* Base typography & smooth scrolling */
+    html {
+      scroll-behavior: smooth;
+      font-family: 'Inter', sans-serif;
+      background-color: #FAF8F5;
+      color: #202124;
+    }
+
+    /* Iconic KFC Red & White Vertical Bucket Stripes */
+    .kfc-stripes-banner {
+      background: repeating-linear-gradient(
+        90deg,
+        #E4002B 0px,
+        #E4002B 28px,
+        #FFFFFF 28px,
+        #FFFFFF 56px
+      );
+    }
+
+    .kfc-stripes-mini {
+      background: repeating-linear-gradient(
+        90deg,
+        #E4002B 0px,
+        #E4002B 10px,
+        #FFFFFF 10px,
+        #FFFFFF 20px
+      );
+    }
+
+    /* Animated diagonal stripe pattern for progress bar */
+    .progress-stripes {
+      background-image: linear-gradient(
+        45deg,
+        rgba(255, 255, 255, 0.2) 25%,
+        transparent 25%,
+        transparent 50%,
+        rgba(255, 255, 255, 0.2) 50%,
+        rgba(255, 255, 255, 0.2) 75%,
+        transparent 75%,
+        transparent
+      );
+      background-size: 24px 24px;
+      animation: moveStripes 1.2s linear infinite;
+    }
+
+    @keyframes moveStripes {
+      0% { background-position: 0 0; }
+      100% { background-position: 24px 0; }
+    }
+
+    /* Mascot gentle float & talk bounce */
+    @keyframes mascotIdle {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-3px) rotate(1deg); }
+    }
+
+    @keyframes mascotTalk {
+      0% { transform: scale(1) rotate(0deg); }
+      25% { transform: scale(1.06) rotate(-3deg); }
+      50% { transform: scale(1.04) rotate(3deg); }
+      75% { transform: scale(1.05) rotate(-2deg); }
+      100% { transform: scale(1) rotate(0deg); }
+    }
+
+    .mascot-idle {
+      animation: mascotIdle 3.2s ease-in-out infinite;
+    }
+
+    .mascot-talk {
+      animation: mascotTalk 0.45s ease-out;
+    }
+
+    /* Corks swinging subtly on the Aussie slouch hat */
+    @keyframes corkSwing {
+      0%, 100% { transform: rotate(-5deg); }
+      50% { transform: rotate(6deg); }
+    }
+
+    .cork-swing-1 {
+      transform-origin: top center;
+      animation: corkSwing 2.2s ease-in-out infinite;
+    }
+
+    .cork-swing-2 {
+      transform-origin: top center;
+      animation: corkSwing 2.6s ease-in-out infinite reverse;
+    }
+
+    /* Speech bubble pop-in */
+    @keyframes popIn {
+      0% { opacity: 0; transform: translateY(6px) scale(0.98); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .animate-pop {
+      animation: popIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* Custom clean scrollbar for tray */
+    .tray-scroll::-webkit-scrollbar {
+      width: 6px;
+    }
+    .tray-scroll::-webkit-scrollbar-track {
+      background: #FAF8F5;
+      border-radius: 999px;
+    }
+    .tray-scroll::-webkit-scrollbar-thumb {
+      background: #D1D5DB;
+      border-radius: 999px;
+    }
+    .tray-scroll::-webkit-scrollbar-thumb:hover {
+      background: #E4002B;
+    }
+  </style>
+</head>
+<body class="bg-kfcCream text-kfcBlack min-h-screen flex flex-col selection:bg-kfcRed selection:text-white">
+
+  <!-- Signature Top KFC Vertical Bucket Stripes -->
+  <div class="w-full h-3.5 kfc-stripes-banner border-b border-red-200"></div>
+
+  <!-- Top Navigation Header -->
+  <header class="bg-white border-b-2 border-gray-200 sticky top-0 z-30 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-3">
+      <!-- Brand Logo + Title -->
+      <div class="flex items-center gap-3">
+        <!-- Custom SVG KFC Striped Bucket Logo -->
+        <div class="w-11 h-11 sm:w-12 sm:h-12 bg-kfcRed rounded-xl flex items-center justify-center shadow-sm shrink-0 border-2 border-kfcBlack">
+          <svg viewBox="0 0 64 64" class="w-8 h-8 sm:w-9 sm:h-9" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <!-- Golden crispy chicken pieces peeking out -->
+            <circle cx="23" cy="20" r="8" fill="#F5A623" stroke="#202124" stroke-width="2.5"/>
+            <circle cx="39" cy="19" r="8.5" fill="#F5A623" stroke="#202124" stroke-width="2.5"/>
+            <circle cx="31" cy="16" r="8" fill="#FBBF24" stroke="#202124" stroke-width="2.5"/>
+            <!-- Bucket body -->
+            <path d="M13 24H51L46 56C45.7 57.7 44.2 59 42.5 59H21.5C19.8 59 18.3 57.7 18 56L13 24Z" fill="#FFFFFF" stroke="#202124" stroke-width="2.5"/>
+            <!-- Red vertical stripes on bucket -->
+            <path d="M21 25H27L25.5 58H21.5L21 25Z" fill="#E4002B"/>
+            <path d="M37 25H43L42.5 58H38.5L37 25Z" fill="#E4002B"/>
+            <!-- Bucket rim -->
+            <rect x="11" y="21" width="42" height="5" rx="2.5" fill="#E4002B" stroke="#202124" stroke-width="2"/>
+          </svg>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="font-oswald text-2xl sm:text-3xl font-bold tracking-tight uppercase text-kfcBlack leading-none">
+              KFC <span class="text-kfcRed">Calorie</span> Mate
+            </h1>
+            <span class="hidden md:inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-bold uppercase tracking-wider bg-kfcGold/20 text-amber-900 border border-kfcGold/40">
+              🇦🇺 Aussie Edition
+            </span>
+          </div>
+          <p class="text-xs text-gray-500 font-medium mt-0.5 hidden sm:block">
+            Fair dinkum dirty bird macro &amp; calorie tracker, bro
+          </p>
+        </div>
+      </div>
+
+      <!-- Right Controls: Unit Toggle (kcal / kJ) + Mobile Feed Jump Button -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <!-- Energy Unit Switcher -->
+        <div class="bg-kfcCream p-1 rounded-xl border border-gray-300 flex items-center" role="group" aria-label="Energy Unit Switcher">
+          <button
+            id="btn-unit-kcal"
+            type="button"
+            onclick="setEnergyUnit('kcal')"
+            class="px-2.5 sm:px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all bg-kfcRed text-white shadow-sm"
+          >
+            kcal
+          </button>
+          <button
+            id="btn-unit-kj"
+            type="button"
+            onclick="setEnergyUnit('kJ')"
+            class="px-2.5 sm:px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all text-gray-600 hover:text-kfcBlack"
+          >
+            kJ
+          </button>
+        </div>
+
+        <!-- Mobile Quick Jump to Tray Pill -->
+        <a
+          href="#your-feed-section"
+          class="lg:hidden inline-flex items-center gap-1.5 bg-kfcBlack hover:bg-gray-800 text-white px-3 py-2 rounded-xl text-xs font-bold shadow-sm transition-colors"
+        >
+          <span>Bucket</span>
+          <span id="mobile-tray-badge" class="bg-kfcRed text-white px-1.5 py-0.5 rounded-md font-oswald text-xs">0</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 sm:space-y-8">
+
+    <!-- AUSSIE "BRO / MATE" PERSONA ENGINE CARD -->
+    <section aria-label="Aussie Mate Coach" class="bg-white rounded-2xl border-2 border-kfcBlack shadow-kfc overflow-hidden">
+      <!-- Top Mini Red & White Stripes -->
+      <div class="h-2 w-full kfc-stripes-mini border-b border-gray-200"></div>
+
+      <div class="p-4 sm:p-6 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5">
+        <!-- Left: Mascot Avatar + Speech Bubble -->
+        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-5 flex-1 w-full">
+          <!-- Custom SVG Aussie Cork-Hat Colonel-Inspired Mascot -->
+          <button
+            type="button"
+            onclick="triggerRandomQuip()"
+            title="Tap for another Aussie quip, bro!"
+            class="group relative shrink-0 focus:outline-none"
+          >
+            <div id="mascot-container" class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-b from-amber-50 to-red-50 border-2 border-kfcBlack flex items-center justify-center shadow-sm mascot-idle group-hover:border-kfcRed transition-colors">
+              <svg viewBox="0 0 120 120" class="w-18 h-18 sm:w-22 sm:h-22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Aussie Slouch / Cork Hat Brim -->
+                <ellipse cx="60" cy="36" rx="46" ry="11" fill="#C69C6D" stroke="#202124" stroke-width="3"/>
+                <!-- Hat Crown -->
+                <path d="M35 35C35 21 45 14 60 14C75 14 85 21 85 35H35Z" fill="#D9B382" stroke="#202124" stroke-width="3"/>
+                <!-- Hat Red Band -->
+                <rect x="36" y="30" width="48" height="5" fill="#E4002B" stroke="#202124" stroke-width="2"/>
+
+                <!-- Dangling Aussie Hat Corks -->
+                <g class="cork-swing-1">
+                  <line x1="22" y1="38" x2="22" y2="52" stroke="#202124" stroke-width="2"/>
+                  <rect x="18" y="51" width="8" height="10" rx="2" fill="#B57B45" stroke="#202124" stroke-width="2"/>
+                </g>
+                <g class="cork-swing-2">
+                  <line x1="98" y1="38" x2="98" y2="52" stroke="#202124" stroke-width="2"/>
+                  <rect x="94" y="51" width="8" height="10" rx="2" fill="#B57B45" stroke="#202124" stroke-width="2"/>
+                </g>
+
+                <!-- White Hair Tufts -->
+                <path d="M32 45C27 49 27 57 32 61" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round"/>
+                <path d="M32 45C27 49 27 57 32 61" stroke="#202124" stroke-width="2.5" stroke-linecap="round"/>
+                <path d="M88 45C93 49 93 57 88 61" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round"/>
+                <path d="M88 45C93 49 93 57 88 61" stroke="#202124" stroke-width="2.5" stroke-linecap="round"/>
+
+                <!-- Friendly Face -->
+                <path d="M35 42H85V66C85 80 74 90 60 90C46 90 35 80 35 66V42Z" fill="#FFE0C2" stroke="#202124" stroke-width="3"/>
+
+                <!-- Classic Glasses -->
+                <rect x="41" y="50" width="15" height="11" rx="3" fill="#FFFFFF" stroke="#202124" stroke-width="2.5"/>
+                <rect x="64" y="50" width="15" height="11" rx="3" fill="#FFFFFF" stroke="#202124" stroke-width="2.5"/>
+                <line x1="56" y1="55" x2="64" y2="55" stroke="#202124" stroke-width="2.5"/>
+                <!-- Eyes -->
+                <circle cx="49" cy="55.5" r="2.3" fill="#202124"/>
+                <circle cx="71" cy="55.5" r="2.3" fill="#202124"/>
+
+                <!-- White Mustache & Iconic Goatee -->
+                <path d="M45 71C50 67 56 68 60 71C64 68 70 67 75 71" fill="#FFFFFF" stroke="#202124" stroke-width="2.3" stroke-linecap="round"/>
+                <path d="M55 77L60 88L65 77H55Z" fill="#FFFFFF" stroke="#202124" stroke-width="2.2" stroke-linejoin="round"/>
+                <!-- Happy Smile -->
+                <path d="M51 73C54 77 66 77 69 73" stroke="#202124" stroke-width="2.3" stroke-linecap="round"/>
+
+                <!-- KFC Red Apron & String Bow-Tie -->
+                <path d="M28 112C31 96 42 91 60 91C78 91 89 96 92 112H28Z" fill="#E4002B" stroke="#202124" stroke-width="3"/>
+                <!-- Apron White Stripes -->
+                <line x1="46" y1="93" x2="44" y2="111" stroke="#FFFFFF" stroke-width="3"/>
+                <line x1="74" y1="93" x2="76" y2="111" stroke="#FFFFFF" stroke-width="3"/>
+                <!-- String Bowtie -->
+                <path d="M52 93L60 97L68 93" stroke="#202124" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M55 103L60 97L65 103" stroke="#202124" stroke-width="2.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <span class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-kfcBlack text-white text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full whitespace-nowrap">
+              Coach Bazza
+            </span>
+          </button>
+
+          <!-- Speech Bubble Content -->
+          <div class="flex-1 w-full bg-kfcCream border-2 border-gray-200 rounded-2xl p-3.5 sm:p-4 relative">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-1.5">
+              <div class="flex items-center gap-2">
+                <span class="font-oswald text-xs sm:text-sm font-bold uppercase tracking-wider text-kfcRed">
+                  Aussie Mate Coach
+                </span>
+                <span id="coach-verdict-badge" class="hidden px-2.5 py-0.5 rounded-full text-[11px] font-extrabold uppercase tracking-wide bg-kfcGold text-kfcBlack border border-amber-600">
+                  CERTIFIED WEAPON FEED
+                </span>
+              </div>
+              <span id="coach-vibe-tag" class="text-[11px] font-semibold text-gray-500">
+                Vibe: Chill Mate
+              </span>
+            </div>
+
+            <p id="coach-speech-text" class="text-sm sm:text-base font-semibold text-kfcBlack leading-relaxed animate-pop">
+              "G'day mate! Ready for a cheeky KFC feed, bro? Chuck your order in the bucket and I'll keep an eye on your macros!"
+            </p>
+          </div>
+        </div>
+
+        <!-- Right: Vibe Switcher + Roast / Rate My Feed Button -->
+        <div class="flex flex-col sm:flex-row lg:flex-col items-stretch sm:items-center lg:items-end gap-3 w-full lg:w-auto shrink-0 border-t lg:border-t-0 pt-3 lg:pt-0 border-gray-200">
+          <!-- Vibe Switcher Toggle -->
+          <div class="w-full sm:w-auto">
+            <span class="block text-[11px] font-bold uppercase tracking-wider text-gray-500 mb-1 lg:text-right">
+              Aussie Coach Vibe
+            </span>
+            <div class="grid grid-cols-3 bg-kfcCream p-1 rounded-xl border border-gray-300 gap-1" role="group" aria-label="Aussie Coach Vibe">
+              <button
+                type="button"
+                data-vibe="chill"
+                onclick="setCoachVibe('chill')"
+                class="vibe-btn px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-kfcBlack text-white shadow-sm whitespace-nowrap"
+              >
+                Chill Mate
+              </button>
+              <button
+                type="button"
+                data-vibe="gym"
+                onclick="setCoachVibe('gym')"
+                class="vibe-btn px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all text-gray-600 hover:text-kfcBlack whitespace-nowrap"
+              >
+                Gym Bro Mate
+              </button>
+              <button
+                type="button"
+                data-vibe="fullsend"
+                onclick="setCoachVibe('fullsend')"
+                class="vibe-btn px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all text-gray-600 hover:text-kfcBlack whitespace-nowrap"
+              >
+                Full Send Aussie
+              </button>
+            </div>
+          </div>
+
+          <!-- Action Buttons Row -->
+          <div class="flex items-center gap-2 w-full sm:w-auto">
+            <button
+              type="button"
+              onclick="triggerRandomQuip()"
+              class="px-3 py-2.5 rounded-xl border-2 border-gray-300 hover:border-kfcBlack bg-white text-kfcBlack text-xs font-bold transition-all active:scale-95 whitespace-nowrap"
+              title="Get another Aussie comment"
+            >
+              G'day Quip
+            </button>
+            <button
+              type="button"
+              onclick="roastMyFeed()"
+              class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-kfcRed hover:bg-kfcDarkRed text-white font-oswald text-sm sm:text-base font-bold uppercase tracking-wide shadow-sm transition-all active:scale-95 border-2 border-kfcBlack"
+            >
+              <span>🔥 Roast / Rate My Feed, Bro</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TWO-COLUMN WORKSPACE: MENU BROWSER (LEFT) & YOUR FEED BUCKET TRAY (RIGHT) -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
+
+      <!-- LEFT COLUMN: KFC MENU BROWSER & CUSTOM ITEM BUILDER -->
+      <div class="lg:col-span-7 xl:col-span-8 space-y-6">
+
+        <!-- Menu Filter & Search Controls Card -->
+        <div class="bg-white rounded-2xl border-2 border-gray-200 p-4 sm:p-5 shadow-kfc space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h2 class="font-oswald text-2xl font-bold uppercase tracking-tight text-kfcBlack">
+                KFC Australia <span class="text-kfcRed">Menu Board</span>
+              </h2>
+              <p class="text-xs text-gray-500 font-medium">
+                Tap any item to chuck it straight into your bucket, mate
+              </p>
+            </div>
+
+            <!-- Search Input -->
+            <div class="relative w-full sm:w-64">
+              <svg class="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="M21 21l-4.35-4.35" stroke-linecap="round"></path>
+              </svg>
+              <input
+                id="menu-search-input"
+                type="text"
+                placeholder="Search Zinger, chips, wings..."
+                oninput="handleSearchInput(this.value)"
+                class="w-full pl-9 pr-8 py-2 bg-kfcCream border border-gray-300 focus:border-kfcRed focus:bg-white rounded-xl text-sm font-medium outline-none transition-colors"
+              />
+              <button
+                id="btn-clear-search"
+                type="button"
+                onclick="clearSearch()"
+                class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-kfcBlack text-sm font-bold px-1"
+                aria-label="Clear search"
+              >
+                ×
+              </button>
+            </div>
+          </div>
+
+          <!-- Category Tabs + Sort Dropdown -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1 border-t border-gray-100">
+            <!-- Category Filter Pills -->
+            <div id="category-tabs" class="flex flex-wrap items-center gap-1.5" role="tablist" aria-label="Menu Categories">
+              <button type="button" data-category="All" onclick="setCategoryFilter('All')" class="cat-tab px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-kfcRed text-white shadow-sm">
+                All Items
+              </button>
+              <button type="button" data-category="Burgers & Wraps" onclick="setCategoryFilter('Burgers & Wraps')" class="cat-tab px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-kfcCream text-gray-700 hover:bg-gray-200">
+                Burgers &amp; Wraps
+              </button>
+              <button type="button" data-category="Chicken & Wings" onclick="setCategoryFilter('Chicken & Wings')" class="cat-tab px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-kfcCream text-gray-700 hover:bg-gray-200">
+                Chicken &amp; Wings
+              </button>
+              <button type="button" data-category="Box Meals" onclick="setCategoryFilter('Box Meals')" class="cat-tab px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-kfcCream text-gray-700 hover:bg-gray-200">
+                Box Meals
+              </button>
+              <button type="button" data-category="Sides & Drinks" onclick="setCategoryFilter('Sides & Drinks')" class="cat-tab px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-kfcCream text-gray-700 hover:bg-gray-200">
+                Sides &amp; Drinks
+              </button>
+            </div>
+
+            <!-- Sort Select -->
+            <div class="flex items-center gap-1.5 self-start sm:self-auto">
+              <label for="menu-sort" class="text-[11px] font-bold uppercase text-gray-400">Sort:</label>
+              <select
+                id="menu-sort"
+                onchange="setSortMode(this.value)"
+                class="bg-kfcCream border border-gray-300 rounded-xl px-2.5 py-1.5 text-xs font-bold text-kfcBlack outline-none focus:border-kfcRed"
+              >
+                <option value="default">Menu Order</option>
+                <option value="cal-asc">Lowest Energy</option>
+                <option value="cal-desc">Highest Energy</option>
+                <option value="protein-desc">Highest Protein</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Menu Items Grid -->
+        <div id="menu-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <!-- Dynamically populated by JS -->
+        </div>
+
+        <!-- Empty Search Fallback -->
+        <div id="menu-empty-state" class="hidden bg-white rounded-2xl border-2 border-dashed border-gray-300 p-8 text-center space-y-2">
+          <p class="font-oswald text-xl uppercase font-bold text-kfcBlack">
+            No menu items found, bro!
+          </p>
+          <p class="text-sm text-gray-500">
+            Nothing matched your search. Try another term or add a custom item below, mate.
+          </p>
+          <button
+            type="button"
+            onclick="resetFilters()"
+            class="mt-2 inline-flex items-center px-4 py-2 rounded-xl bg-kfcRed text-white text-xs font-bold uppercase tracking-wide"
+          >
+            Reset Filters
+          </button>
+        </div>
+
+        <!-- Custom KFC Item Form Card -->
+        <section aria-label="Add Custom KFC Item" class="bg-white rounded-2xl border-2 border-gray-200 p-4 sm:p-6 shadow-kfc">
+          <div class="flex items-center justify-between gap-2 mb-4">
+            <div>
+              <h3 class="font-oswald text-xl font-bold uppercase tracking-tight text-kfcBlack">
+                Custom Item / <span class="text-kfcRed">Secret Menu Hack</span>
+              </h3>
+              <p class="text-xs text-gray-500">
+                Got a Double Down, Mashies, or custom feed? Chuck the numbers in here, bro!
+              </p>
+            </div>
+            <span class="px-2.5 py-1 rounded-lg bg-kfcGoldLight text-amber-900 border border-amber-300 text-[11px] font-bold uppercase">
+              + Custom
+            </span>
+          </div>
+
+          <form id="custom-item-form" onsubmit="handleAddCustomItem(event)" class="grid grid-cols-1 sm:grid-cols-12 gap-3">
+            <div class="sm:col-span-5">
+              <label for="custom-name" class="block text-[11px] font-bold uppercase text-gray-600 mb-1">
+                Item Name *
+              </label>
+              <input
+                id="custom-name"
+                type="text"
+                required
+                maxlength="45"
+                placeholder="e.g., Zinger Double Down"
+                class="w-full px-3 py-2 bg-kfcCream border border-gray-300 focus:border-kfcRed focus:bg-white rounded-xl text-sm font-medium outline-none"
+              />
+            </div>
+
+            <div class="sm:col-span-3">
+              <label id="custom-energy-label" for="custom-energy" class="block text-[11px] font-bold uppercase text-gray-600 mb-1">
+                Calories (kcal) *
+              </label>
+              <input
+                id="custom-energy"
+                type="number"
+                required
+                min="0"
+                max="15000"
+                step="1"
+                placeholder="e.g., 610"
+                class="w-full px-3 py-2 bg-kfcCream border border-gray-300 focus:border-kfcRed focus:bg-white rounded-xl text-sm font-bold outline-none"
+              />
+            </div>
+
+            <div class="sm:col-span-2">
+              <label for="custom-protein" class="block text-[11px] font-bold uppercase text-gray-600 mb-1">
+                Protein (g)
+              </label>
+              <input
+                id="custom-protein"
+                type="number"
+                min="0"
+                max="500"
+                step="1"
+                placeholder="48"
+                class="w-full px-3 py-2 bg-kfcCream border border-gray-300 focus:border-kfcRed focus:bg-white rounded-xl text-sm font-medium outline-none"
+              />
+            </div>
+
+            <div class="sm:col-span-2 flex items-end">
+              <button
+                type="submit"
+                class="w-full py-2.5 px-3 rounded-xl bg-kfcBlack hover:bg-kfcRed text-white font-oswald text-sm font-bold uppercase tracking-wider transition-colors shadow-sm"
+              >
+                + Add Feed
+              </button>
+            </div>
+          </form>
+        </section>
+      </div>
+
+      <!-- RIGHT COLUMN: STICKY "YOUR FEED" BUCKET TRAY & CALORIE METER -->
+      <aside id="your-feed-section" class="lg:col-span-5 xl:col-span-4 lg:sticky lg:top-24 space-y-5">
+
+        <!-- 1. Daily Calorie Goal & Bucket Fill Meter Card -->
+        <div class="bg-white rounded-2xl border-2 border-kfcBlack shadow-kfc overflow-hidden">
+          <!-- Card Header -->
+          <div class="bg-kfcBlack text-white px-5 py-3.5 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-kfcRed inline-block"></span>
+              <h2 class="font-oswald text-lg font-bold uppercase tracking-wide">
+                Daily Feed Target
+              </h2>
+            </div>
+            <span id="goal-status-pill" class="text-[11px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
+              Sweet As, Mate
+            </span>
+          </div>
+
+          <div class="p-5 space-y-5">
+            <!-- Editable Goal Input + Presets -->
+            <div class="space-y-2.5">
+              <div class="flex items-center justify-between gap-2">
+                <label for="daily-goal-input" class="text-xs font-bold uppercase tracking-wider text-gray-500">
+                  Your Daily Limit (<span class="unit-label">kcal</span>)
+                </label>
+                <div class="flex items-center gap-1.5">
+                  <input
+                    id="daily-goal-input"
+                    type="number"
+                    min="500"
+                    max="30000"
+                    step="50"
+                    value="2000"
+                    onchange="handleGoalInputChange(this.value)"
+                    class="w-28 text-right font-oswald text-lg font-bold px-2.5 py-1 bg-kfcCream border-2 border-gray-300 focus:border-kfcRed rounded-xl outline-none"
+                  />
+                  <span class="text-xs font-bold text-gray-500 unit-label">kcal</span>
+                </div>
+              </div>
+
+              <!-- Goal Preset Buttons -->
+              <div class="grid grid-cols-3 gap-1.5">
+                <button
+                  type="button"
+                  data-preset-kcal="1600"
+                  onclick="setCalorieGoalKcal(1600)"
+                  class="goal-preset-btn px-2 py-2 rounded-xl border border-gray-300 bg-kfcCream hover:border-kfcRed text-center transition-all"
+                >
+                  <span class="block text-[11px] font-extrabold text-kfcBlack leading-tight">Cutting Bro</span>
+                  <span class="block font-oswald text-xs font-bold text-kfcRed mt-0.5" data-preset-display="1600">1,600 kcal</span>
+                </button>
+                <button
+                  type="button"
+                  data-preset-kcal="2000"
+                  onclick="setCalorieGoalKcal(2000)"
+                  class="goal-preset-btn px-2 py-2 rounded-xl border-2 border-kfcRed bg-red-50/70 text-center transition-all"
+                >
+                  <span class="block text-[11px] font-extrabold text-kfcBlack leading-tight">Standard Mate</span>
+                  <span class="block font-oswald text-xs font-bold text-kfcRed mt-0.5" data-preset-display="2000">2,000 kcal</span>
+                </button>
+                <button
+                  type="button"
+                  data-preset-kcal="2800"
+                  onclick="setCalorieGoalKcal(2800)"
+                  class="goal-preset-btn px-2 py-2 rounded-xl border border-gray-300 bg-kfcCream hover:border-kfcRed text-center transition-all"
+                >
+                  <span class="block text-[11px] font-extrabold text-kfcBlack leading-tight">Bulking Legend</span>
+                  <span class="block font-oswald text-xs font-bold text-kfcRed mt-0.5" data-preset-display="2800">2,800 kcal</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Visual Bucket Fill Gauge + Stats Row -->
+            <div class="bg-kfcCream rounded-2xl p-4 border border-gray-200 flex items-center gap-4">
+              <!-- Interactive SVG Bucket Fill Gauge -->
+              <div class="shrink-0 flex flex-col items-center">
+                <svg viewBox="0 0 80 88" class="w-16 h-18" aria-label="Bucket Fill Gauge">
+                  <defs>
+                    <clipPath id="bucket-clip">
+                      <path d="M14 22H66L59 78C58.6 80.5 56.5 82 54 82H26C23.5 82 21.4 80.5 21 78L14 22Z"/>
+                    </clipPath>
+                  </defs>
+                  <!-- Bucket background -->
+                  <path d="M14 22H66L59 78C58.6 80.5 56.5 82 54 82H26C23.5 82 21.4 80.5 21 78L14 22Z" fill="#FFFFFF" stroke="#202124" stroke-width="3"/>
+                  <!-- Dynamic Fill Rect inside Bucket -->
+                  <g clip-path="url(#bucket-clip)">
+                    <rect id="bucket-svg-fill" x="10" y="82" width="60" height="0" fill="#E4002B" class="transition-all duration-500 ease-out"/>
+                    <!-- Subtle vertical bucket stripes overlay -->
+                    <rect x="24" y="22" width="7" height="60" fill="rgba(0,0,0,0.06)"/>
+                    <rect x="49" y="22" width="7" height="60" fill="rgba(0,0,0,0.06)"/>
+                  </g>
+                  <!-- Bucket Outline & Rim -->
+                  <path d="M14 22H66L59 78C58.6 80.5 56.5 82 54 82H26C23.5 82 21.4 80.5 21 78L14 22Z" fill="none" stroke="#202124" stroke-width="3"/>
+                  <rect x="11" y="17" width="58" height="6" rx="3" fill="#202124"/>
+                  <!-- Percentage Label in Center -->
+                  <rect x="21" y="42" width="38" height="18" rx="5" fill="#FFFFFF" stroke="#202124" stroke-width="2"/>
+                  <text id="bucket-svg-pct" x="40" y="54.5" text-anchor="middle" font-family="Oswald, sans-serif" font-weight="700" font-size="11.5" fill="#202124">0%</text>
+                </svg>
+              </div>
+
+              <!-- Consumed / Remaining / Protein Metrics -->
+              <div class="flex-1 grid grid-cols-2 gap-y-2.5 gap-x-3">
+                <div>
+                  <span class="block text-[11px] font-bold uppercase text-gray-500">Consumed</span>
+                  <span id="stat-consumed" class="font-oswald text-2xl font-bold text-kfcBlack leading-tight">0</span>
+                  <span class="text-xs font-bold text-gray-500 unit-label">kcal</span>
+                </div>
+
+                <div>
+                  <span id="stat-remaining-label" class="block text-[11px] font-bold uppercase text-gray-500">Remaining</span>
+                  <span id="stat-remaining" class="font-oswald text-2xl font-bold text-emerald-600 leading-tight">2,000</span>
+                  <span class="text-xs font-bold text-gray-500 unit-label">kcal</span>
+                </div>
+
+                <div class="col-span-2 pt-2 border-t border-gray-200 flex items-center justify-between">
+                  <span class="text-xs font-bold text-gray-600">Total Protein Gains:</span>
+                  <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-amber-100 text-amber-900 font-oswald text-sm font-bold border border-amber-300">
+                    💪 <span id="stat-protein">0g</span> Protein
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Horizontal Progress Bar -->
+            <div class="space-y-1.5">
+              <div class="w-full h-4 bg-gray-200 rounded-full overflow-hidden p-0.5 border border-gray-300">
+                <div
+                  id="calorie-progress-bar"
+                  style="width: 0%"
+                  class="h-full rounded-full bg-kfcRed progress-stripes transition-all duration-500 ease-out"
+                ></div>
+              </div>
+              <div class="flex justify-between text-[11px] font-bold text-gray-500">
+                <span>0%</span>
+                <span id="progress-caption">Empty bucket, bro</span>
+                <span>100%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. "Your Feed" Order Tray Card -->
+        <div class="bg-white rounded-2xl border-2 border-gray-200 shadow-kfc overflow-hidden">
+          <!-- Tray Header -->
+          <div class="px-5 py-4 border-b-2 border-gray-100 flex items-center justify-between gap-2 bg-white">
+            <div class="flex items-center gap-2">
+              <h2 class="font-oswald text-xl font-bold uppercase tracking-tight text-kfcBlack">
+                Your Feed <span class="text-kfcRed">Bucket</span>
+              </h2>
+              <span id="tray-item-count" class="px-2 py-0.5 rounded-full bg-kfcRed text-white font-oswald text-xs font-bold">
+                0 items
+              </span>
+            </div>
+
+            <!-- Tray Quick Actions: Copy & Clear -->
+            <div class="flex items-center gap-1.5">
+              <button
+                id="btn-copy-feed"
+                type="button"
+                onclick="copyFeedSummary()"
+                class="px-2.5 py-1.5 rounded-lg bg-kfcCream hover:bg-gray-200 text-kfcBlack text-xs font-bold transition-colors border border-gray-300"
+                title="Copy feed summary to share with your mates"
+              >
+                Copy
+              </button>
+              <button
+                id="btn-clear-feed"
+                type="button"
+                onclick="handleClearFeedClick()"
+                class="px-2.5 py-1.5 rounded-lg bg-red-50 hover:bg-kfcRed text-kfcRed hover:text-white text-xs font-bold transition-colors border border-red-200"
+              >
+                Clear Feed
+              </button>
+            </div>
+          </div>
+
+          <!-- Tray Items List -->
+          <div id="tray-items-container" class="p-4 max-h-[380px] overflow-y-auto tray-scroll space-y-2.5">
+            <!-- Dynamically rendered tray items -->
+          </div>
+        </div>
+
+      </aside>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="mt-12 bg-kfcBlack text-gray-300 border-t-4 border-kfcRed">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+      <div class="flex items-center gap-2">
+        <span class="font-oswald text-base font-bold uppercase tracking-wider text-white">
+          KFC <span class="text-kfcRed">Calorie</span> Mate
+        </span>
+        <span class="text-gray-500">|</span>
+        <span>No worries, bro — track responsibly, mate.</span>
+      </div>
+      <p class="text-gray-400 text-center sm:text-right">
+        Nutritional figures based on standard KFC Australia menu data (1 kcal = 4.184 kJ).
+      </p>
+    </div>
+  </footer>
+
+  <!-- Non-Intrusive Toast Notification -->
+  <div
+    id="toast-banner"
+    class="fixed bottom-5 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 translate-y-4 transition-all duration-300"
+  >
+    <div class="bg-kfcBlack text-white px-4 py-2.5 rounded-xl shadow-lg border-2 border-kfcRed flex items-center gap-2 text-xs sm:text-sm font-bold">
+      <span class="text-kfcGold">🍗</span>
+      <span id="toast-message">Added to your feed, bro!</span>
+    </div>
+  </div>
+
+  <!-- Application Logic -->
+  <script>
+    /**
+     * =========================================================================
+     * 1. KFC AUSTRALIA MENU DATASET (Exact kcal, kJ, and protein values)
+     * =========================================================================
+     */
+    const DEFAULT_MENU_ITEMS = [
+      {
+        id: 'zinger-burger',
+        name: 'Zinger Burger',
+        category: 'Burgers & Wraps',
+        kcal: 451,
+        kj: 1888,
+        protein: 26,
+        iconType: 'burger',
+        tag: 'Spicy Icon',
+      },
+      {
+        id: 'zinger-stacker',
+        name: 'Zinger Stacker',
+        category: 'Burgers & Wraps',
+        kcal: 718,
+        kj: 3004,
+        protein: 35,
+        iconType: 'stacker',
+        tag: 'Double Fillet',
+      },
+      {
+        id: 'original-crispy-burger',
+        name: 'Original Crispy Burger',
+        category: 'Burgers & Wraps',
+        kcal: 465,
+        kj: 1946,
+        protein: 22,
+        iconType: 'burger',
+        tag: 'Crunchy Classic',
+      },
+      {
+        id: 'zinger-crunch-twister',
+        name: 'Zinger Crunch Twister',
+        category: 'Burgers & Wraps',
+        kcal: 549,
+        kj: 2297,
+        protein: 26,
+        iconType: 'twister',
+        tag: 'Wrapped Up',
+      },
+      {
+        id: 'original-pepper-mayo-slider',
+        name: 'Original Pepper Mayo Slider',
+        category: 'Burgers & Wraps',
+        kcal: 269,
+        kj: 1125,
+        protein: 14,
+        iconType: 'slider',
+        tag: 'Snack Size',
+      },
+      {
+        id: 'zinger-box-meal',
+        name: 'Zinger Box Meal',
+        category: 'Box Meals',
+        kcal: 1155,
+        kj: 4832,
+        protein: 56,
+        iconType: 'box',
+        tag: 'Heavy Hitter',
+      },
+      {
+        id: '3-piece-box-meal',
+        name: '3 Piece Box Meal',
+        category: 'Box Meals',
+        kcal: 1164,
+        kj: 4869,
+        protein: 54,
+        iconType: 'box',
+        tag: 'Absolute Feast',
+      },
+      {
+        id: 'original-recipe-1pc',
+        name: 'Original Recipe Chicken (1 Pc)',
+        category: 'Chicken & Wings',
+        kcal: 235,
+        kj: 984,
+        protein: 17,
+        iconType: 'drumstick',
+        tag: '11 Herbs & Spices',
+      },
+      {
+        id: 'wicked-wings-3pk',
+        name: 'Wicked Wings (3 Pack)',
+        category: 'Chicken & Wings',
+        kcal: 361,
+        kj: 1510,
+        protein: 22,
+        iconType: 'wings',
+        tag: 'Crispy Heat',
+      },
+      {
+        id: 'original-tenders-3pk',
+        name: 'Original Tenders (3 Pack)',
+        category: 'Chicken & Wings',
+        kcal: 431,
+        kj: 1803,
+        protein: 32,
+        iconType: 'tenders',
+        tag: 'Protein Weapon',
+      },
+      {
+        id: 'regular-popcorn-chicken',
+        name: 'Regular Popcorn Chicken',
+        category: 'Chicken & Wings',
+        kcal: 393,
+        kj: 1644,
+        protein: 21,
+        iconType: 'popcorn',
+        tag: 'Bite-Sized',
+      },
+      {
+        id: '6-golden-nuggets',
+        name: '6 Golden Nuggets',
+        category: 'Chicken & Wings',
+        kcal: 251,
+        kj: 1050,
+        protein: 16,
+        iconType: 'nuggets',
+        tag: 'Dip Ready',
+      },
+      {
+        id: 'regular-chips-chicken-salt',
+        name: 'Regular Chips w/ Chicken Salt',
+        category: 'Sides & Drinks',
+        kcal: 283,
+        kj: 1186,
+        protein: 4,
+        iconType: 'chips',
+        tag: 'Aussie Essential',
+      },
+      {
+        id: 'large-chips-chicken-salt',
+        name: 'Large Chips w/ Chicken Salt',
+        category: 'Sides & Drinks',
+        kcal: 567,
+        kj: 2371,
+        protein: 8,
+        iconType: 'chips',
+        tag: 'Extra Salt Bro',
+      },
+      {
+        id: 'regular-potato-gravy',
+        name: 'Regular Potato & Gravy',
+        category: 'Sides & Drinks',
+        kcal: 64,
+        kj: 267,
+        protein: 2,
+        iconType: 'gravy',
+        tag: 'Low Cal Gold',
+      },
+      {
+        id: 'supercharged-aioli-dip',
+        name: 'Supercharged / Aioli Dip',
+        category: 'Sides & Drinks',
+        kcal: 145,
+        kj: 607,
+        protein: 1,
+        iconType: 'dip',
+        tag: 'Sauce Boss',
+      },
+      {
+        id: 'pepsi-max-can',
+        name: 'Pepsi Max Can',
+        category: 'Sides & Drinks',
+        kcal: 1,
+        kj: 4,
+        protein: 0,
+        iconType: 'drink',
+        tag: 'Zero Sugar Mate',
+      },
+    ];
+
+    /**
+     * =========================================================================
+     * 2. APPLICATION STATE & LOCALSTORAGE PERSISTENCE
+     * =========================================================================
+     */
+    const STORAGE_KEY = 'kfc_calorie_mate_state_v1';
+
+    let appState = {
+      tray: [], // Array of { id, quantity }
+      customItems: [], // User-created items
+      dailyGoalKcal: 2000,
+      unit: 'kcal', // 'kcal' | 'kJ'
+      vibe: 'chill', // 'chill' | 'gym' | 'fullsend'
+      selectedCategory: 'All',
+      searchQuery: '',
+      sortMode: 'default',
+    };
+
+    let clearConfirmTimeout = null;
+    let isClearArmed = false;
+    let toastTimeout = null;
+
+    /**
+     * Load state safely from localStorage
+     */
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          appState = {
+            ...appState,
+            tray: Array.isArray(parsed.tray) ? parsed.tray : [],
+            customItems: Array.isArray(parsed.customItems) ? parsed.customItems : [],
+            dailyGoalKcal: Number(parsed.dailyGoalKcal) >= 500 ? Number(parsed.dailyGoalKcal) : 2000,
+            unit: parsed.unit === 'kJ' ? 'kJ' : 'kcal',
+            vibe: ['chill', 'gym', 'fullsend'].includes(parsed.vibe) ? parsed.vibe : 'chill',
+          };
+        }
+      } catch (err) {
+        console.warn('Could not load saved state:', err);
+      }
+    }
+
+    /**
+     * Persist state safely to localStorage
+     */
+    function saveState() {
+      try {
+        const toSave = {
+          tray: appState.tray,
+          customItems: appState.customItems,
+          dailyGoalKcal: appState.dailyGoalKcal,
+          unit: appState.unit,
+          vibe: appState.vibe,
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+      } catch (err) {
+        console.warn('Could not save state:', err);
+      }
+    }
+
+    /**
+     * Combine default menu items with user custom items
+     */
+    function getAllMenuItems() {
+      return [...DEFAULT_MENU_ITEMS, ...appState.customItems];
+    }
+
+    function findMenuItemById(id) {
+      return getAllMenuItems().find((item) => item.id === id);
+    }
+
+    /**
+     * Format energy number according to active unit (kcal or kJ)
+     */
+    function formatEnergyValue(itemOrKcal) {
+      if (typeof itemOrKcal === 'object' && itemOrKcal !== null) {
+        return appState.unit === 'kJ' ? itemOrKcal.kj : itemOrKcal.kcal;
+      }
+      const val = appState.unit === 'kJ' ? Math.round(itemOrKcal * 4.184) : Math.round(itemOrKcal);
+      return val;
+    }
+
+    function formatNumber(num) {
+      return Math.round(num).toLocaleString('en-AU');
+    }
+
+    /**
+     * =========================================================================
+     * 3. CUSTOM INLINE SVG FOOD ILLUSTRATIONS
+     * =========================================================================
+     */
+    function getFoodSvgIcon(type) {
+      const icons = {
+        burger: `
+          <svg viewBox="0 0 48 48" class="w-9 h-9" fill="none">
+            <path d="M9 21C9 13 16 9 24 9C32 9 39 13 39 21H9Z" fill="#F5A623" stroke="#202124" stroke-width="2.5"/>
+            <path d="M7 25C11 23 15 27 19 25C23 23 27 27 31 25C35 23 38 26 41 25" stroke="#16A34A" stroke-width="3" stroke-linecap="round"/>
+            <rect x="8" y="28" width="32" height="5" rx="2.5" fill="#D97706" stroke="#202124" stroke-width="2"/>
+            <path d="M10 35H38V37C38 39.2 36.2 41 34 41H14C11.8 41 10 39.2 10 37V35Z" fill="#F5A623" stroke="#202124" stroke-width="2.5"/>
+          </svg>`,
+        stacker: `
+          <svg viewBox="0 0 48 48" class="w-9 h-9" fill="none">
+            <path d="M9 17C9 11 16 7 24 7C32 7 39 11 39 17H9Z" fill="#F5A623" stroke="#202124" stroke-width="2.5"/>
+            <rect x="8" y="20" width="32" height="4.5" rx="2" fill="#D97706" stroke="#202124" stroke-width="2"/>
+            <path d="M9 27L24 30L39 27" stroke="#E4002B" stroke-width="3" stroke-linecap="round"/>
+            <rect x="8" y="30" width="32" height="4.5" rx="2" fill="#B45309" stroke="#202124" stroke-width="2"/>
+            <path d="M10 37H38V39C38 41 36.2 42 34 42H14C11.8 42 10 41 10 39V37Z" fill="#F5A623" stroke="#202124" stroke-width="2.5"/>
+          </svg>`,
+        twister: `
+          <svg viewBox="0 0 48 48" class="w-9 h-9" fill="none">
+            <path d="M14 14L34 10L38 34L18 40L14 14Z" fill="#FEF3C7" stroke="#202124" stroke-width="2.5" stroke-linejoin="round"/>
+            <path d="M16 14C20 10 28 9 33 11" stroke="#16A34A" stroke-width="3" stroke-linecap="round"/>
+            <path d="M15 24L36 20" stroke="#E4002B" stroke-width="3"/>
+            <path d="M16 30L37 26" stroke="#F5A623" stroke-width="2.5"/>
+          </svg>`,
+        slider: `
+          <svg viewBox="0 0 48 48" class="w-9 h-9" fill="none">
+            <path d="M12 23C12 16 17 13 24 13C31 13 36 16 36 23H12Z" fill="#F5A623" stroke="#202124" stroke-width="2.5"/>
+            <rect x="11" y="26" width="26" height="5" rx="2.5" fill="#D97706" stroke="#202124" stroke-width="2"/>
+            <path d="M13 33H35V35C35 37 33.5 38 31.5 38H16.5C14.5 38 13 37 13 35V33Z" fill="#F5A623" stroke="#202124" stroke-width="2.5"/>
+          </svg>`,
+        box: `
+          <svg viewBox="0 0 48 48" class="w-9 h-9" fill="none">
+            <rect x="8" y="14" width="32" height="25" rx="4" fill="#E4002B" stroke="#202124" stroke-width="2.5"/>
+            <rect x="14" y="14" width="5" height="25" fill="#FFFFFF"/>
+            <rect x="29" y="14" width="5" height="25" fill="#FFFFFF"/>
+            <path d="M8 21H40" stroke="#202124" stroke-width="2.5"/>
+            <circle cx="24" cy="29" r="5" fill="#F5A623" stroke="#202124" stroke-width="2"/>
+          </svg>`,
+        drumstick: `
+          <svg viewBox="0 0 48 48" class="w-9 h-9" fill="none">
+            <path d="M27 11C33 11 38 16 38 22C38 28 32 32 25 32L18 35L14 31L17 24C17 17 21 11 27 11Z" fill="#F5A623" stroke="#202124" stroke-width="2.5"/>
+            <path d="M15 32L10 37C8.5 38.5 8.5 40.5 10 41.5C11.5 42.5 13.5 41.5 14 40L17 34" fill="#FFFFFF" stroke="#202124" stroke-width="2.3" stroke-linecap="round"/>
+          </svg>`,
+        wings: `
+          <svg viewBox="0 0 48 48" class="w-9 h-9" fill="none">
+            <path d="M12 28C12 18 22 12 34 14C37 18 34 26 26 30C20 33 14 33 12 28Z" fill="#E4002B" stroke="#202124" stroke-width="2.5"/>
+            <path d="M16 25C18 19 24 16 31 17" stroke="#F5A623" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="35" cy="33" r="4" fill="#F5A623" stroke="#202124" stroke-width="2"/>
+          </svg>`,
+        tenders: `
+          <svg viewBox="0 0 48 48" class="w-9 h-9" fill="none">
+            <rect x="11" y="13" width="9" height="24" rx="4.5" transform="rotate(-12 11 13)" fill="#F5A623" stroke="#202124" stroke-width="2.3"/>
+            <rect x="21" y="11" width="9" height="25" rx="4.5" fill="#FBBF24" stroke="#202124" stroke-width="2.3"/>
+            <rect x="30" y="13" width="9" height="24" rx="4.5" transform="rotate(12 30 13)" fill="#F5A623" stroke="#202124" stroke-width="2.3"/>
+          </svg>`,
+        popcorn: `
+          <svg viewBox="0 0 48 48" class="w-9 h-9" fill="none">
+            <circle cx="19" cy="17" r="5" fill="#F5A623" stroke="#202124" stroke-width="2"/>
+            <circle cx="29" cy="17" r="5" fill="#F5A623" stroke="#202124" stroke-width="2"/>
+            <circle cx="24" cy="14" r="5" fill="#FBBF24" stroke="#202124" stroke-width="2"/>
+            <path d="M14 20H34L31 39H17L14 20Z" fill="#E4002B" stroke="#202124" stroke-width="2.5"/>
+            <path d="M21 20H27L26.5 39H21.5L21 20Z" fill="#FFFFFF"/>
+          </svg>`,
+        nuggets: `
+          <svg viewBox="0 0 48 48" class="w-9 h-9" fill="none">
+            <rect x="10" y="14" width="12" height="9" rx="4" fill="#F5A623" stroke="#202124" stroke-width="2.3"/>
+            <rect x="26" y="14" width="12" height="9" rx="4" fill="#FBBF24" stroke="#202124" stroke-width="2.3"/>
+            <rect x="10" y="27" width="12" height="9" rx="4" fill="#FBBF24" stroke="#202124" stroke-width="2.3"/>
+            <rect x="26" y="27" width="12" height="9" rx="4" fill="#F5A623" stroke="#202124" stroke-width="2.3"/>
+          </svg>`,
+        chips: `
+          <svg viewBox="0 0 48 48" class="w-9 h-9" fill="none">
+            <rect x="15" y="10" width="4" height="16" rx="1.5" fill="#FBBF24" stroke="#202124" stroke-width="2"/>
+            <rect x="22" y="8" width="4" height="18" rx="1.5" fill="#F5A623" stroke="#202124" stroke-width="2"/>
+            <rect x="29" y="11" width="4" height="15" rx="1.5" fill="#FBBF24" stroke="#202124" stroke-width="2"/>
+            <path d="M12 22H36L33 40H15L12 22Z" fill="#E4002B" stroke="#202124" stroke-width="2.5"/>
+            <circle cx="24" cy="31" r="3" fill="#FFFFFF"/>
+          </svg>`,
+        gravy: `
+          <svg viewBox="0 0 48 48" class="w-9 h-9" fill="none">
+            <path d="M12 21H36L33 38H15L12 21Z" fill="#FFFFFF" stroke="#202124" stroke-width="2.5"/>
+            <ellipse cx="24" cy="21" rx="12" ry="4" fill="#78350F" stroke="#202124" stroke-width="2.3"/>
+            <path d="M17 29H31" stroke="#E4002B" stroke-width="3" stroke-linecap="round"/>
+          </svg>`,
+        dip: `
+          <svg viewBox="0 0 48 48" class="w-9 h-9" fill="none">
+            <path d="M14 20H34L31 36H17L14 20Z" fill="#FEF3C7" stroke="#202124" stroke-width="2.5"/>
+            <ellipse cx="24" cy="20" rx="10" ry="3.5" fill="#F5A623" stroke="#202124" stroke-width="2.2"/>
+          </svg>`,
+        drink: `
+          <svg viewBox="0 0 48 48" class="w-9 h-9" fill="none">
+            <rect x="15" y="11" width="18" height="28" rx="3.5" fill="#1E293B" stroke="#202124" stroke-width="2.5"/>
+            <circle cx="24" cy="25" r="5.5" fill="#E4002B"/>
+            <path d="M19 25C22 23 26 27 29 25" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+            <line x1="18" y1="11" x2="30" y2="11" stroke="#94A3B8" stroke-width="3" stroke-linecap="round"/>
+          </svg>`,
+        custom: `
+          <svg viewBox="0 0 48 48" class="w-9 h-9" fill="none">
+            <circle cx="24" cy="24" r="14" fill="#FEF3C7" stroke="#202124" stroke-width="2.5"/>
+            <path d="M24 17V31M17 24H31" stroke="#E4002B" stroke-width="3" stroke-linecap="round"/>
+          </svg>`,
+      };
+      return icons[type] || icons.custom;
+    }
+
+    /**
+     * =========================================================================
+     * 4. AUSSIE "BRO / MATE" PERSONA & REACTION ENGINE
+     * =========================================================================
+     */
+    const VIBE_QUIPS = {
+      chill: [
+        "G'day mate! Ready for a cheeky KFC feed, bro? Chuck your order in the bucket!",
+        "No dramas bro, take your time browsing the menu — chicken salt makes everything better, mate.",
+        "Easy tiger bro, keep an eye on that daily limit so you're sweet as for dinner, mate.",
+        "Fair dinkum bro, nothing beats a fresh Zinger after a long arvo, mate!",
+        "She'll be right mate! Balance out the chippies with a cold Pepsi Max, bro.",
+      ],
+      gym: [
+        "G'day bro! Chasing pure dirty-bird protein gains today, mate? Original Tenders are elite!",
+        "Light weight baby, bro! Load up that protein meter without blowing the calorie budget, mate!",
+        "Solid macro play bro! Keep the protein high and skip the extra mayo if you're cutting, mate.",
+        "Bloody oath bro, 50g+ protein in a single box meal — pure anabolic fuel, mate!",
+        "Stay disciplined bro! Track every wing and dip so your cut stays razor sharp, mate.",
+      ],
+      fullsend: [
+        "STREEWTH BRO! Full send on the Colonel's finest today, mate — no holding back!",
+        "Bloody oath mate, chuck extra chicken salt on those large chippies and send it, bro!",
+        "Crikey bro, that bucket is looking like an absolute weapon of a feed, mate!",
+        "Good on ya mate! Life's too short for dry chicken — dunk it in the Potato & Gravy, bro!",
+        "Send it to the moon bro! You're eating like an absolute Aussie legend today, mate!",
+      ],
+    };
+
+    const ITEM_SPECIFIC_REACTIONS = {
+      'zinger-burger': {
+        chill: "Classic Zinger Burger, mate! Can't go wrong with that spicy crunch, bro.",
+        gym: "26g of protein in the Zinger Burger, bro — solid macro value for 451 kcal, mate!",
+        fullsend: "Oath bro! The Zinger Burger is the undisputed king of Aussie drive-thrus, mate!",
+      },
+      'zinger-stacker': {
+        chill: "Whoa bro, going double fillet with the Zinger Stacker! Absolute unit of a burger, mate.",
+        gym: "35g of protein in one Stacker, bro! Double the chicken, double the gains, mate!",
+        fullsend: "STREWTH MATE! A Zinger Stacker?! You're not mucking around today, bro!",
+      },
+      'zinger-box-meal': {
+        chill: "Strewth mate, that Zinger Box is an absolute weapon! Proper feed right there, bro.",
+        gym: "56g of protein in the Zinger Box, bro — massive post-workout refuel, mate!",
+        fullsend: "FULL SEND BRO! The Zinger Box is peak Aussie cuisine, mate — elite choice!",
+      },
+      '3-piece-box-meal': {
+        chill: "Three pieces of Original Recipe plus the sides, mate — proper comfort feed, bro.",
+        gym: "54g of protein in the 3 Piece Box, bro! Huge muscle fuel, just watch the total energy, mate.",
+        fullsend: "Bloody oath bro, 3 pieces of the Colonel's secret herbs & spices — living large, mate!",
+      },
+      'regular-chips-chicken-salt': {
+        chill: "Fair dinkum bro, chuck some extra chicken salt on those chippies, mate!",
+        gym: "Watch those sneaky carb calories on the chippies, bro — still gotta have a taste though, mate!",
+        fullsend: "Aussie chicken salt is basically a food group, bro! Good on ya, mate!",
+      },
+      'large-chips-chicken-salt': {
+        chill: "Large chips with extra chicken salt, bro! Just don't let your mates steal half of 'em, mate.",
+        gym: "567 kcal of pure carb energy, bro — save those for leg day, mate!",
+        fullsend: "LARGE CHIPPIES BRO! Make sure they drown 'em in chicken salt, mate!",
+      },
+      'regular-potato-gravy': {
+        chill: "Only 64 kcal for Potato & Gravy, bro?! Absolute bargain for dunking, mate!",
+        gym: "Elite low-cal hack right there bro — 64 kcal to make dry chicken taste legendary, mate!",
+        fullsend: "Dunk everything in the Potato & Gravy, bro! Pure liquid gold, mate!",
+      },
+      'pepsi-max-can': {
+        chill: "Good on ya mate, Pepsi Max keeps it sweet as for 1 calorie, bro!",
+        gym: "Zero sugar, 1 kcal — elite gym bro beverage choice, mate!",
+        fullsend: "Classic Aussie move bro: 1,000+ calories of fried chicken paired with a Pepsi Max, mate!",
+      },
+      'original-tenders-3pk': {
+        chill: "Original Tenders are clean and crispy, bro — top tier pick, mate.",
+        gym: "32g of protein for 431 kcal, bro! Original Tenders are the ultimate gym-bro menu hack, mate!",
+        fullsend: "Three golden tenders locked and loaded, bro — grab a dip and send it, mate!",
+      },
+      'wicked-wings-3pk': {
+        chill: "Wicked Wings, bro! Crispy, spicy, and dangerous to stop at just three, mate.",
+        gym: "22g protein on the Wicked Wings, bro — spicy pre-workout energy, mate!",
+        fullsend: "Wicked Wings are elite tier, bro — spicy enough to wake up the whole outback, mate!",
+      },
+    };
+
+    /**
+     * Update the speech bubble UI with animation and optional verdict badge
+     */
+    function updateCoachSpeech(message, verdictText = null) {
+      const speechEl = document.getElementById('coach-speech-text');
+      const badgeEl = document.getElementById('coach-verdict-badge');
+      const mascotEl = document.getElementById('mascot-container');
+
+      // Trigger re-animation
+      speechEl.classList.remove('animate-pop');
+      void speechEl.offsetWidth; // Force reflow
+      speechEl.textContent = `"${message}"`;
+      speechEl.classList.add('animate-pop');
+
+      // Mascot bounce
+      mascotEl.classList.remove('mascot-talk');
+      void mascotEl.offsetWidth;
+      mascotEl.classList.add('mascot-talk');
+
+      if (verdictText) {
+        badgeEl.textContent = verdictText;
+        badgeEl.classList.remove('hidden');
+      } else {
+        badgeEl.classList.add('hidden');
+      }
+    }
+
+    /**
+     * Trigger a random quip matching the current vibe
+     */
+    function triggerRandomQuip() {
+      const pool = VIBE_QUIPS[appState.vibe] || VIBE_QUIPS.chill;
+      const randomMsg = pool[Math.floor(Math.random() * pool.length)];
+      updateCoachSpeech(randomMsg);
+    }
+
+    /**
+     * React dynamically when a user adds a menu item
+     */
+    function reactToItemAdded(item) {
+      const totals = calculateTotals();
+      const pct = (totals.kcal / appState.dailyGoalKcal) * 100;
+
+      // Priority warning if they just crossed 100% of their daily limit
+      if (pct > 105) {
+        const overMsgs = {
+          chill: `Easy tiger bro! Adding that ${item.name} pushed you past your daily limit, mate — might need a walk around the block!`,
+          gym: `Whoa bro, you just blew past your calorie cap with that ${item.name}, mate! Looks like you're officially bulking now, bro!`,
+          fullsend: `STREWTH BRO! You've smashed straight through your daily limit with that ${item.name}, mate — absolute madlad!`,
+        };
+        updateCoachSpeech(overMsgs[appState.vibe]);
+        return;
+      }
+
+      // Check item-specific reaction
+      if (ITEM_SPECIFIC_REACTIONS[item.id]) {
+        updateCoachSpeech(ITEM_SPECIFIC_REACTIONS[item.id][appState.vibe]);
+        return;
+      }
+
+      // Generic fallback reaction using bro & mate
+      const generic = {
+        chill: `Chucked the ${item.name} in your bucket, bro! Looking sweet as, mate.`,
+        gym: `Added ${item.name} (+${item.protein}g protein), bro! Keep tracking those macros, mate.`,
+        fullsend: `Boom bro! ${item.name} is in the tray — what else we adding, mate?!`,
+      };
+      updateCoachSpeech(generic[appState.vibe]);
+    }
+
+    /**
+     * Analyze the user's current meal combo and deliver a hilarious Aussie roast/rating
+     */
+    function roastMyFeed() {
+      const totals = calculateTotals();
+
+      if (appState.tray.length === 0) {
+        updateCoachSpeech(
+          "Your bucket is completely empty, bro! Chuck some Zingers, wings, or chippies in first before I rate your feed, mate!",
+          "EMPTY BUCKET BLUES"
+        );
+        return;
+      }
+
+      const pct = Math.round((totals.kcal / appState.dailyGoalKcal) * 100);
+      const proteinRatio = totals.kcal > 0 ? (totals.protein * 4) / totals.kcal : 0;
+
+      const hasPepsiMax = appState.tray.some((t) => t.id === 'pepsi-max-can');
+      const hasChips = appState.tray.some((t) => t.id.includes('chips'));
+      const hasGravy = appState.tray.some((t) => t.id === 'regular-potato-gravy');
+      const totalItemsCount = appState.tray.reduce((sum, t) => sum + t.quantity, 0);
+
+      // Combo-specific hilarious Aussie verdicts
+      if (totals.kcal >= 1000 && hasPepsiMax && totals.kcal <= appState.dailyGoalKcal) {
+        updateCoachSpeech(
+          `Classic Aussie move bro: ${formatNumber(formatEnergyValue(totals.kcal))} ${appState.unit} of pure dirty bird balanced out by a 1-calorie Pepsi Max, mate! Honestly, ${totals.protein}g of protein is serious business — absolute weapon of a feed, bro!`,
+          "CLASSIC AUSSIE BALANCE"
+        );
+        return;
+      }
+
+      if (pct > 115) {
+        updateCoachSpeech(
+          `Strewth bro, you're sitting at ${pct}% of your daily limit (${formatNumber(formatEnergyValue(totals.kcal))} ${appState.unit})! That's not a snack mate, that's a full-blown food coma waiting to happen — hope you're wearing your stretchy trackies, bro!`,
+          "FOOD COMA INCOMING"
+        );
+        return;
+      }
+
+      if (proteinRatio >= 0.27 && totals.protein >= 35) {
+        updateCoachSpeech(
+          `Bloody oath bro! ${totals.protein}g of protein for ${formatNumber(formatEnergyValue(totals.kcal))} ${appState.unit}?! You've cracked the KFC macro code, mate — pure lean dirty-bird gains, bro!`,
+          "ELITE PROTEIN GAINS"
+        );
+        return;
+      }
+
+      if (hasChips && hasGravy && totalItemsCount <= 3) {
+        updateCoachSpeech(
+          `Chips with chicken salt AND Potato & Gravy, bro?! Elite dunking combo mate, though your protein is looking a bit light at ${totals.protein}g — chuck a tender or drumstick in there, bro!`,
+          "ELITE DUNKING COMBO"
+        );
+        return;
+      }
+
+      if (pct >= 80 && pct <= 105) {
+        updateCoachSpeech(
+          `Right on the money, bro! You've hit ${pct}% of your daily target with ${totals.protein}g of protein, mate. Precision KFC macro engineering right there, bro!`,
+          "CERTIFIED WEAPON FEED"
+        );
+        return;
+      }
+
+      if (pct < 35) {
+        updateCoachSpeech(
+          `Only ${pct}% of your daily limit so far, bro? That's barely an entree, mate! Plenty of room left in the budget for a Zinger or some Wicked Wings, bro!`,
+          "CHEEKY WARM-UP SNACK"
+        );
+        return;
+      }
+
+      // General solid rating
+      updateCoachSpeech(
+        `Fair dinkum bro, ${totalItemsCount} item${totalItemsCount > 1 ? 's' : ''} clocking ${formatNumber(formatEnergyValue(totals.kcal))} ${appState.unit} and ${totals.protein}g protein (${pct}% of your daily goal). Solid feed, mate — enjoy every bite, bro!`,
+        "FAIR DINKUM FEED"
+      );
+    }
+
+    /**
+     * =========================================================================
+     * 5. FILTERING, SORTING & RENDERING THE MENU BOARD
+     * =========================================================================
+     */
+    function getFilteredAndSortedMenu() {
+      let items = getAllMenuItems();
+
+      // Category filter
+      if (appState.selectedCategory !== 'All') {
+        items = items.filter((item) => item.category === appState.selectedCategory);
+      }
+
+      // Search filter
+      if (appState.searchQuery.trim() !== '') {
+        const q = appState.searchQuery.trim().toLowerCase();
+        items = items.filter(
+          (item) =>
+            item.name.toLowerCase().includes(q) ||
+            item.category.toLowerCase().includes(q) ||
+            (item.tag && item.tag.toLowerCase().includes(q))
+        );
+      }
+
+      // Sort
+      if (appState.sortMode === 'cal-asc') {
+        items = [...items].sort((a, b) => a.kcal - b.kcal);
+      } else if (appState.sortMode === 'cal-desc') {
+        items = [...items].sort((a, b) => b.kcal - a.kcal);
+      } else if (appState.sortMode === 'protein-desc') {
+        items = [...items].sort((a, b) => b.protein - a.protein);
+      }
+
+      return items;
+    }
+
+    function renderMenuGrid() {
+      const gridEl = document.getElementById('menu-grid');
+      const emptyEl = document.getElementById('menu-empty-state');
+      const items = getFilteredAndSortedMenu();
+
+      if (items.length === 0) {
+        gridEl.innerHTML = '';
+        emptyEl.classList.remove('hidden');
+        return;
+      }
+
+      emptyEl.classList.add('hidden');
+
+      gridEl.innerHTML = items
+        .map((item) => {
+          const inTrayEntry = appState.tray.find((t) => t.id === item.id);
+          const qty = inTrayEntry ? inTrayEntry.quantity : 0;
+          const displayEnergy = formatNumber(formatEnergyValue(item));
+          const isHighProtein = item.kcal > 0 && (item.protein * 4) / item.kcal >= 0.25;
+
+          return `
+            <article class="group bg-white rounded-2xl border-2 ${
+              qty > 0 ? 'border-kfcRed shadow-kfcHover' : 'border-gray-200 hover:border-kfcBlack shadow-kfc'
+            } transition-all duration-200 flex flex-col justify-between overflow-hidden">
+              <div>
+                <!-- Subtle top accent bar -->
+                <div class="h-1.5 w-full ${qty > 0 ? 'bg-kfcRed' : 'bg-gray-100 group-hover:bg-kfcRed'} transition-colors"></div>
+
+                <div class="p-4">
+                  <!-- Top Row: Food SVG + Category / Tag Pills -->
+                  <div class="flex items-start justify-between gap-3 mb-3">
+                    <div class="w-12 h-12 rounded-xl bg-kfcCream border border-gray-200 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                      ${getFoodSvgIcon(item.iconType)}
+                    </div>
+
+                    <div class="flex flex-col items-end gap-1">
+                      <span class="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-md bg-gray-100 text-gray-600">
+                        ${escapeHtml(item.category)}
+                      </span>
+                      ${
+                        isHighProtein
+                          ? `<span class="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-md bg-amber-100 text-amber-900 border border-amber-300">
+                              💪 High Protein
+                            </span>`
+                          : item.tag
+                          ? `<span class="text-[10px] font-bold px-2 py-0.5 rounded-md bg-red-50 text-kfcRed">
+                              ${escapeHtml(item.tag)}
+                            </span>`
+                          : ''
+                      }
+                    </div>
+                  </div>
+
+                  <!-- Item Title -->
+                  <h3 class="font-oswald text-lg sm:text-xl font-bold uppercase tracking-tight text-kfcBlack leading-snug">
+                    ${escapeHtml(item.name)}
+                  </h3>
+                </div>
+              </div>
+
+              <!-- Bottom Row: Energy + Protein + Add Button -->
+              <div class="px-4 pb-4 pt-2 border-t border-gray-100 flex items-center justify-between gap-2">
+                <div>
+                  <div class="flex items-baseline gap-1">
+                    <span class="font-oswald text-2xl font-bold text-kfcRed leading-none">
+                      ${displayEnergy}
+                    </span>
+                    <span class="text-xs font-extrabold uppercase text-gray-500">
+                      ${appState.unit}
+                    </span>
+                  </div>
+                  <span class="block text-xs font-semibold text-gray-500 mt-0.5">
+                    ${item.protein}g protein
+                  </span>
+                </div>
+
+                <button
+                  type="button"
+                  onclick="addToFeed('${item.id}')"
+                  class="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl font-oswald text-sm font-bold uppercase tracking-wide transition-all active:scale-95 ${
+                    qty > 0
+                      ? 'bg-kfcBlack hover:bg-kfcRed text-white'
+                      : 'bg-kfcRed hover:bg-kfcDarkRed text-white'
+                  } shadow-sm"
+                >
+                  <span>+ Add</span>
+                  ${
+                    qty > 0
+                      ? `<span class="ml-0.5 px-1.5 py-0.2 bg-kfcGold text-kfcBlack rounded-md text-xs font-extrabold">${qty}</span>`
+                      : ''
+                  }
+                </button>
+              </div>
+            </article>
+          `;
+        })
+        .join('');
+    }
+
+    /**
+     * =========================================================================
+     * 6. TRAY MANAGEMENT, CALORIE METER & BUCKET VISUALIZATION
+     * =========================================================================
+     */
+    function calculateTotals() {
+      let totalKcal = 0;
+      let totalKj = 0;
+      let totalProtein = 0;
+      let totalCount = 0;
+
+      for (const entry of appState.tray) {
+        const item = findMenuItemById(entry.id);
+        if (item) {
+          totalKcal += item.kcal * entry.quantity;
+          totalKj += item.kj * entry.quantity;
+          totalProtein += item.protein * entry.quantity;
+          totalCount += entry.quantity;
+        }
+      }
+
+      return {
+        kcal: totalKcal,
+        kj: totalKj,
+        protein: totalProtein,
+        count: totalCount,
+      };
+    }
+
+    function addToFeed(itemId) {
+      const item = findMenuItemById(itemId);
+      if (!item) return;
+
+      const existing = appState.tray.find((t) => t.id === itemId);
+      if (existing) {
+        existing.quantity += 1;
+      } else {
+        appState.tray.push({ id: itemId, quantity: 1 });
+      }
+
+      saveState();
+      renderAll();
+      reactToItemAdded(item);
+      showToast(`Added ${item.name} (+${formatNumber(formatEnergyValue(item))} ${appState.unit})`);
+    }
+
+    function updateItemQuantity(itemId, delta) {
+      const idx = appState.tray.findIndex((t) => t.id === itemId);
+      if (idx === -1) return;
+
+      appState.tray[idx].quantity += delta;
+      if (appState.tray[idx].quantity <= 0) {
+        const removedItem = findMenuItemById(itemId);
+        appState.tray.splice(idx, 1);
+        if (removedItem) {
+          updateCoachSpeech(`Took the ${removedItem.name} out of your bucket, bro. Easy done, mate!`);
+        }
+      }
+
+      saveState();
+      renderAll();
+    }
+
+    function removeItemFromFeed(itemId) {
+      const item = findMenuItemById(itemId);
+      appState.tray = appState.tray.filter((t) => t.id !== itemId);
+      saveState();
+      renderAll();
+      if (item) {
+        updateCoachSpeech(`Ditched the ${item.name} from your tray, bro. Plenty of room left, mate!`);
+      }
+    }
+
+    /**
+     * Two-step Clear Feed button (no browser confirm() dialog!)
+     */
+    function handleClearFeedClick() {
+      if (appState.tray.length === 0) {
+        showToast("Your bucket's already empty, bro!");
+        return;
+      }
+
+      const btn = document.getElementById('btn-clear-feed');
+      if (!isClearArmed) {
+        isClearArmed = true;
+        btn.textContent = 'Sure, bro? Tap again';
+        btn.classList.remove('bg-red-50', 'text-kfcRed');
+        btn.classList.add('bg-kfcRed', 'text-white');
+
+        clearConfirmTimeout = setTimeout(() => {
+          resetClearButton();
+        }, 3200);
+      } else {
+        clearTimeout(clearConfirmTimeout);
+        resetClearButton();
+        appState.tray = [];
+        saveState();
+        renderAll();
+        updateCoachSpeech("Fresh bucket, clean slate, bro! Ready for round two whenever you are, mate!");
+        showToast('Bucket cleared, mate!');
+      }
+    }
+
+    function resetClearButton() {
+      isClearArmed = false;
+      const btn = document.getElementById('btn-clear-feed');
+      if (btn) {
+        btn.textContent = 'Clear Feed';
+        btn.classList.add('bg-red-50', 'text-kfcRed');
+        btn.classList.remove('bg-kfcRed', 'text-white');
+      }
+    }
+
+    /**
+     * Render the "Your Feed" Order Tray & Bucket Meter
+     */
+    function renderTrayAndMeter() {
+      const totals = calculateTotals();
+      const consumedDisplay = appState.unit === 'kJ' ? totals.kj : totals.kcal;
+      const goalDisplay = formatEnergyValue(appState.dailyGoalKcal);
+      const diffDisplay = goalDisplay - consumedDisplay;
+      const rawPct = appState.dailyGoalKcal > 0 ? (totals.kcal / appState.dailyGoalKcal) * 100 : 0;
+      const roundedPct = Math.round(rawPct);
+      const clampedPct = Math.min(100, Math.max(0, rawPct));
+
+      // Update Unit Labels across UI
+      document.querySelectorAll('.unit-label').forEach((el) => {
+        el.textContent = appState.unit;
+      });
+
+      // Update Goal Input & Presets
+      const goalInput = document.getElementById('daily-goal-input');
+      goalInput.value = goalDisplay;
+
+      document.querySelectorAll('.goal-preset-btn').forEach((btn) => {
+        const presetKcal = Number(btn.getAttribute('data-preset-kcal'));
+        const presetSpan = btn.querySelector('[data-preset-display]');
+        if (presetSpan) {
+          presetSpan.textContent = `${formatNumber(formatEnergyValue(presetKcal))} ${appState.unit}`;
+        }
+
+        if (presetKcal === appState.dailyGoalKcal) {
+          btn.classList.remove('border', 'border-gray-300', 'bg-kfcCream');
+          btn.classList.add('border-2', 'border-kfcRed', 'bg-red-50/70');
+        } else {
+          btn.classList.add('border', 'border-gray-300', 'bg-kfcCream');
+          btn.classList.remove('border-2', 'border-kfcRed', 'bg-red-50/70');
+        }
+      });
+
+      // Update Consumed, Remaining & Protein
+      document.getElementById('stat-consumed').textContent = formatNumber(consumedDisplay);
+      document.getElementById('stat-protein').textContent = `${totals.protein}g`;
+
+      const remLabel = document.getElementById('stat-remaining-label');
+      const remVal = document.getElementById('stat-remaining');
+      const statusPill = document.getElementById('goal-status-pill');
+      const progressBar = document.getElementById('calorie-progress-bar');
+      const progressCaption = document.getElementById('progress-caption');
+
+      if (diffDisplay >= 0) {
+        remLabel.textContent = 'Remaining';
+        remVal.textContent = formatNumber(diffDisplay);
+        remVal.className = 'font-oswald text-2xl font-bold text-emerald-600 leading-tight';
+      } else {
+        remLabel.textContent = 'Over Limit';
+        remVal.textContent = `+${formatNumber(Math.abs(diffDisplay))}`;
+        remVal.className = 'font-oswald text-2xl font-bold text-kfcRed leading-tight';
+      }
+
+      // Progress Bar & Status Pill Colors
+      progressBar.style.width = `${clampedPct}%`;
+      if (rawPct === 0) {
+        statusPill.textContent = 'Empty Bucket';
+        statusPill.className = 'text-[11px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-gray-700 text-gray-200';
+        progressBar.className = 'h-full rounded-full bg-kfcRed progress-stripes transition-all duration-500 ease-out';
+        progressCaption.textContent = 'Empty bucket, bro';
+      } else if (rawPct <= 75) {
+        statusPill.textContent = 'Sweet As, Mate';
+        statusPill.className = 'text-[11px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30';
+        progressBar.className = 'h-full rounded-full bg-emerald-500 progress-stripes transition-all duration-500 ease-out';
+        progressCaption.textContent = `${roundedPct}% of daily limit used`;
+      } else if (rawPct <= 100) {
+        statusPill.textContent = 'Getting Close, Bro';
+        statusPill.className = 'text-[11px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-400/30';
+        progressBar.className = 'h-full rounded-full bg-kfcGold progress-stripes transition-all duration-500 ease-out';
+        progressCaption.textContent = `${roundedPct}% — right on target, mate!`;
+      } else {
+        statusPill.textContent = 'Over Limit, Bro!';
+        statusPill.className = 'text-[11px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-kfcRed text-white animate-pulse';
+        progressBar.className = 'h-full rounded-full bg-kfcRed progress-stripes transition-all duration-500 ease-out';
+        progressCaption.textContent = `${roundedPct}% — full send mode!`;
+      }
+
+      // Update SVG Bucket Fill Gauge (height max 60px from y=82 up to y=22)
+      const fillHeight = (clampedPct / 100) * 60;
+      const fillY = 82 - fillHeight;
+      const svgFill = document.getElementById('bucket-svg-fill');
+      svgFill.setAttribute('y', fillY.toFixed(1));
+      svgFill.setAttribute('height', fillHeight.toFixed(1));
+      svgFill.setAttribute('fill', rawPct > 100 ? '#E4002B' : rawPct > 75 ? '#F5A623' : '#E4002B');
+      document.getElementById('bucket-svg-pct').textContent = `${roundedPct}%`;
+
+      // Update Counts
+      document.getElementById('tray-item-count').textContent = `${totals.count} ${totals.count === 1 ? 'item' : 'items'}`;
+      document.getElementById('mobile-tray-badge').textContent = totals.count;
+
+      // Render Tray List
+      const container = document.getElementById('tray-items-container');
+      if (appState.tray.length === 0) {
+        container.innerHTML = `
+          <div class="py-10 px-4 text-center space-y-2.5 bg-kfcCream/70 rounded-xl border border-dashed border-gray-300">
+            <div class="w-12 h-12 mx-auto rounded-full bg-white border border-gray-200 flex items-center justify-center text-xl shadow-xs">
+              🍗
+            </div>
+            <p class="font-oswald text-lg uppercase font-bold text-kfcBlack">
+              Your Bucket Is Empty, Mate!
+            </p>
+            <p class="text-xs text-gray-500 max-w-xs mx-auto leading-relaxed">
+              Tap <span class="font-bold text-kfcRed">+ Add</span> on any KFC menu item to start building your feed, bro.
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = appState.tray
+        .map((entry) => {
+          const item = findMenuItemById(entry.id);
+          if (!item) return '';
+          const subEnergy = formatNumber(formatEnergyValue(item) * entry.quantity);
+          const subProtein = item.protein * entry.quantity;
+
+          return `
+            <div class="bg-kfcCream rounded-xl p-3 border border-gray-200 flex items-center justify-between gap-3 animate-pop">
+              <div class="min-w-0 flex-1">
+                <h4 class="font-oswald text-base font-bold uppercase text-kfcBlack truncate">
+                  ${escapeHtml(item.name)}
+                </h4>
+                <div class="flex items-center gap-2 text-xs font-semibold text-gray-500 mt-0.5">
+                  <span class="text-kfcRed font-bold">${subEnergy} ${appState.unit}</span>
+                  <span>•</span>
+                  <span>${subProtein}g protein</span>
+                </div>
+              </div>
+
+              <!-- Quantity Steppers & Delete -->
+              <div class="flex items-center gap-1.5 shrink-0">
+                <button
+                  type="button"
+                  onclick="updateItemQuantity('${item.id}', -1)"
+                  class="w-7 h-7 rounded-lg bg-white hover:bg-gray-200 border border-gray-300 font-bold text-sm flex items-center justify-center transition-colors"
+                  aria-label="Decrease quantity"
+                >
+                  −
+                </button>
+                <span class="w-6 text-center font-oswald font-bold text-sm text-kfcBlack">
+                  ${entry.quantity}
+                </span>
+                <button
+                  type="button"
+                  onclick="updateItemQuantity('${item.id}', 1)"
+                  class="w-7 h-7 rounded-lg bg-white hover:bg-kfcRed hover:text-white hover:border-kfcRed border border-gray-300 font-bold text-sm flex items-center justify-center transition-colors"
+                  aria-label="Increase quantity"
+                >
+                  +
+                </button>
+                <button
+                  type="button"
+                  onclick="removeItemFromFeed('${item.id}')"
+                  class="ml-1 w-7 h-7 rounded-lg text-gray-400 hover:text-kfcRed hover:bg-red-50 flex items-center justify-center transition-colors"
+                  title="Remove item"
+                  aria-label="Remove item"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                    <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          `;
+        })
+        .join('');
+    }
+
+    /**
+     * =========================================================================
+     * 7. UI CONTROLS, CUSTOM ITEM CREATION & CLIPBOARD EXPORT
+     * =========================================================================
+     */
+    function setEnergyUnit(unit) {
+      if (unit !== 'kcal' && unit !== 'kJ') return;
+      appState.unit = unit;
+
+      const btnKcal = document.getElementById('btn-unit-kcal');
+      const btnKj = document.getElementById('btn-unit-kj');
+      const customLabel = document.getElementById('custom-energy-label');
+      const customInput = document.getElementById('custom-energy');
+
+      if (unit === 'kcal') {
+        btnKcal.className = 'px-2.5 sm:px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all bg-kfcRed text-white shadow-sm';
+        btnKj.className = 'px-2.5 sm:px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all text-gray-600 hover:text-kfcBlack';
+        customLabel.textContent = 'Calories (kcal) *';
+        customInput.placeholder = 'e.g., 610';
+      } else {
+        btnKj.className = 'px-2.5 sm:px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all bg-kfcRed text-white shadow-sm';
+        btnKcal.className = 'px-2.5 sm:px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all text-gray-600 hover:text-kfcBlack';
+        customLabel.textContent = 'Energy (kJ) *';
+        customInput.placeholder = 'e.g., 2550';
+      }
+
+      saveState();
+      renderAll();
+    }
+
+    function setCoachVibe(vibe) {
+      appState.vibe = vibe;
+      const labels = {
+        chill: 'Chill Mate',
+        gym: 'Gym Bro Mate',
+        fullsend: 'Full Send Aussie',
+      };
+      document.getElementById('coach-vibe-tag').textContent = `Vibe: ${labels[vibe]}`;
+
+      document.querySelectorAll('.vibe-btn').forEach((btn) => {
+        if (btn.getAttribute('data-vibe') === vibe) {
+          btn.className = 'vibe-btn px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-kfcBlack text-white shadow-sm whitespace-nowrap';
+        } else {
+          btn.className = 'vibe-btn px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all text-gray-600 hover:text-kfcBlack whitespace-nowrap';
+        }
+      });
+
+      saveState();
+      triggerRandomQuip();
+    }
+
+    function setCategoryFilter(category) {
+      appState.selectedCategory = category;
+      document.querySelectorAll('.cat-tab').forEach((tab) => {
+        if (tab.getAttribute('data-category') === category) {
+          tab.className = 'cat-tab px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-kfcRed text-white shadow-sm';
+        } else {
+          tab.className = 'cat-tab px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-kfcCream text-gray-700 hover:bg-gray-200';
+        }
+      });
+      renderMenuGrid();
+    }
+
+    function handleSearchInput(val) {
+      appState.searchQuery = val;
+      const clearBtn = document.getElementById('btn-clear-search');
+      if (val.trim().length > 0) {
+        clearBtn.classList.remove('hidden');
+      } else {
+        clearBtn.classList.add('hidden');
+      }
+      renderMenuGrid();
+    }
+
+    function clearSearch() {
+      const input = document.getElementById('menu-search-input');
+      input.value = '';
+      handleSearchInput('');
+      input.focus();
+    }
+
+    function resetFilters() {
+      clearSearch();
+      setCategoryFilter('All');
+      document.getElementById('menu-sort').value = 'default';
+      appState.sortMode = 'default';
+      renderMenuGrid();
+    }
+
+    function setSortMode(mode) {
+      appState.sortMode = mode;
+      renderMenuGrid();
+    }
+
+    function setCalorieGoalKcal(kcalVal) {
+      appState.dailyGoalKcal = Math.max(500, Math.min(30000, Math.round(kcalVal)));
+      saveState();
+      renderTrayAndMeter();
+
+      const goalMsgs = {
+        1600: "Cutting mode locked in, bro! Keep it tight and prioritize that chicken protein, mate.",
+        2000: "Standard 2,000 kcal target set, mate — balanced as, bro!",
+        2800: "Bulking Legend mode activated, bro! Time to demolish a Zinger Box or two, mate!",
+      };
+      if (goalMsgs[appState.dailyGoalKcal]) {
+        updateCoachSpeech(goalMsgs[appState.dailyGoalKcal]);
+      }
+    }
+
+    function handleGoalInputChange(rawVal) {
+      const num = Number(rawVal);
+      if (isNaN(num) || num <= 0) {
+        renderTrayAndMeter();
+        return;
+      }
+      const kcalEquivalent = appState.unit === 'kJ' ? Math.round(num / 4.184) : Math.round(num);
+      setCalorieGoalKcal(kcalEquivalent);
+    }
+
+    function handleAddCustomItem(event) {
+      event.preventDefault();
+      const nameInput = document.getElementById('custom-name');
+      const energyInput = document.getElementById('custom-energy');
+      const proteinInput = document.getElementById('custom-protein');
+
+      const name = nameInput.value.trim();
+      const energyVal = Number(energyInput.value);
+      const proteinVal = Math.max(0, Math.round(Number(proteinInput.value) || 0));
+
+      if (!name || isNaN(energyVal) || energyVal < 0) return;
+
+      const kcal = appState.unit === 'kJ' ? Math.round(energyVal / 4.184) : Math.round(energyVal);
+      const kj = appState.unit === 'kJ' ? Math.round(energyVal) : Math.round(energyVal * 4.184);
+
+      const newItem = {
+        id: `custom-${Date.now()}`,
+        name,
+        category: 'Chicken & Wings',
+        kcal,
+        kj,
+        protein: proteinVal,
+        iconType: 'custom',
+        tag: 'Custom Feed',
+      };
+
+      appState.customItems.push(newItem);
+      appState.tray.push({ id: newItem.id, quantity: 1 });
+
+      nameInput.value = '';
+      energyInput.value = '';
+      proteinInput.value = '';
+
+      saveState();
+      renderAll();
+      updateCoachSpeech(`Beauty bro! Added your custom "${newItem.name}" (${formatNumber(formatEnergyValue(newItem))} ${appState.unit}) straight into the bucket, mate!`);
+      showToast(`Created & added ${newItem.name}, bro!`);
+    }
+
+    /**
+     * Copy feed summary to clipboard using document.execCommand('copy')
+     */
+    function copyFeedSummary() {
+      if (appState.tray.length === 0) {
+        showToast('Nothing in your bucket to copy yet, mate!');
+        return;
+      }
+
+      const totals = calculateTotals();
+      const energyTotal = formatNumber(formatEnergyValue(totals.kcal));
+      const goalTotal = formatNumber(formatEnergyValue(appState.dailyGoalKcal));
+
+      const lines = appState.tray.map((entry) => {
+        const item = findMenuItemById(entry.id);
+        if (!item) return '';
+        return `• ${entry.quantity}x ${item.name} (${formatNumber(formatEnergyValue(item) * entry.quantity)} ${appState.unit}, ${item.protein * entry.quantity}g protein)`;
+      });
+
+      const summaryText = [
+        `🍗 My KFC Calorie Mate Feed 🇦🇺`,
+        ...lines,
+        `Total: ${energyTotal} / ${goalTotal} ${appState.unit} | ${totals.protein}g Protein`,
+      ].join('\n');
+
+      const textarea = document.createElement('textarea');
+      textarea.value = summaryText;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+
+      try {
+        document.execCommand('copy');
+        showToast('Copied your feed summary to clipboard, bro!');
+      } catch (err) {
+        showToast('Could not copy feed, mate.');
+      } finally {
+        document.body.removeChild(textarea);
+      }
+    }
+
+    function showToast(msg) {
+      const banner = document.getElementById('toast-banner');
+      const textEl = document.getElementById('toast-message');
+      textEl.textContent = msg;
+
+      banner.classList.remove('opacity-0', 'translate-y-4');
+      banner.classList.add('opacity-100', 'translate-y-0');
+
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        banner.classList.add('opacity-0', 'translate-y-4');
+        banner.classList.remove('opacity-100', 'translate-y-0');
+      }, 2400);
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    function renderAll() {
+      renderMenuGrid();
+      renderTrayAndMeter();
+    }
+
+    /**
+     * =========================================================================
+     * 8. INITIALIZATION ON WINDOW LOAD
+     * =========================================================================
+     */
+    window.addEventListener('DOMContentLoaded', () => {
+      loadState();
+      setEnergyUnit(appState.unit);
+      setCoachVibe(appState.vibe);
+      renderAll();
+
+      // Initial Aussie greeting
+      if (appState.tray.length > 0) {
+        const totals = calculateTotals();
+        updateCoachSpeech(
+          `Welcome back, bro! You've still got ${formatNumber(formatEnergyValue(totals.kcal))} ${appState.unit} loaded in your bucket from earlier, mate.`
+        );
+      } else {
+        updateCoachSpeech(
+          "G'day mate! Ready for a cheeky KFC feed, bro? Chuck your order in the bucket and I'll keep an eye on your macros!"
+        );
+      }
+    });
+  </script>
+</body>
+</html>
